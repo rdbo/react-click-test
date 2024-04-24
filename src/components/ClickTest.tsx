@@ -35,10 +35,9 @@ function ClickTest({ timeSecs, onFinish }: Props) {
     interval.current = setInterval(() => {
       setTimeLeft(Math.max(timeLeftRef.current - intervalMillis, 0));
       if (timeLeftRef.current == 0) {
-        clearInterval(interval.current);
         let cps = clickCountRef.current / timeSecs;
         onFinish(cps);
-        setTimeLeft(0);
+        clearInterval(interval.current);
         interval.current = 0;
       }
     }, intervalMillis);
