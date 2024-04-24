@@ -11,6 +11,7 @@ function ClickTest({ timeSecs, onFinish }: Props) {
   const clickCountRef = useRef(0);
   const [timeLeft, setTimeLeft] = useState(0);
   const timeLeftRef = useRef(0);
+  const interval = useRef(0);
 
   useEffect(() => {
     clickCountRef.current = clickCount;
@@ -29,24 +30,26 @@ function ClickTest({ timeSecs, onFinish }: Props) {
   }
 
   const startTest = () => {
+    setClickCount(0);
     setTimeLeft(timeSecs * 1000);
-    const interval = setInterval(() => {
+    interval.current = setInterval(() => {
       setTimeLeft(Math.max(timeLeftRef.current - intervalMillis, 0));
       if (timeLeftRef.current == 0) {
-        clearInterval(interval);
-        setTimeLeft(0);
+        clearInterval(interval.current);
         let cps = clickCountRef.current / timeSecs;
         onFinish(cps);
+        setTimeLeft(0);
+        interval.current = 0;
       }
     }, intervalMillis);
   };
 
   const handleClick = () => {
-    if (clickCount == 0) {
+    if (timeLeft == 0 && interval.current == 0) {
       startTest();
+    } else {
+      setClickCount(clickCount + 1);
     }
-
-    setClickCount(clickCount + 1);
   };
 
   return (
@@ -56,7 +59,7 @@ function ClickTest({ timeSecs, onFinish }: Props) {
         className="rounded-full border-2 border-black w-96 h-96"
         onClick={handleClick}
       >
-        {clickCount > 0 ? `Clicks: ${clickCount}` : "Click me!"}
+        {timeLeft > 0 ? `Clicks: ${clickCount}` : "Click me!"}
       </button>
     </div>
   );
