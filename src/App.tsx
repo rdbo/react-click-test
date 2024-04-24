@@ -23,7 +23,7 @@ function App() {
                 return (
                   <ClickTest
                     timeSecs={timeSecs}
-                    onFinish={() => alert("goofo")}
+                    onFinish={(cps) => alert(`Your CPS is: ${cps}`)}
                   />
                 );
               }}
